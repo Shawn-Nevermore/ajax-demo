@@ -1,11 +1,17 @@
 myButton.addEventListener("click", (e) => {
-    $.ajax(
-        '/xxx',
-        'post',
-        'a=1&b=2',
-        (request.responseText) => { console.log('success') },
-        (request) => { console.log('fail') }
-    )
+    $.ajax({
+        url: '/xxx',
+        method: 'post',
+        body: 'a=1&b=2',
+        success: (responseText) => {
+            console.log('success')
+            console.log(responseText)
+        },
+        fail: (request) => {
+            console.log('fail')
+            console.log(request.status)
+        }
+    })
 })
 
 window.jQuery = function (nodeOrSelector) {
@@ -13,7 +19,13 @@ window.jQuery = function (nodeOrSelector) {
     return nodes
 }
 
-window.jQuery.ajax = function (url, method, body, success, fail) {
+window.jQuery.ajax = function (options) {
+    let url = options.url
+    let method = options.method
+    let body = options.body
+    let success = options.success
+    let fail = options.fail
+
     let request = new XMLHttpRequest()
     request.open(method, url)
     request.onreadystatechange = () => {
