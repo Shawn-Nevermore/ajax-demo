@@ -1,38 +1,52 @@
-myButton.addEventListener("click", (e) => {
-    $.ajax({
+myButton.addEventListener('click', (e) => {
+    let promise = window.jQuery.ajax({
         url: '/xxx',
-        method: 'post',
-        body: 'a=1&b=2',
-        success: (responseText) => {
-            console.log('success')
-            console.log(responseText)
-        },
-        fail: (request) => {
-            console.log('fail')
-            console.log(request.status)
+        method: 'get',
+        headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            'frank': '18'
         }
     })
+
+    promise.then(
+        (text) => { console.log(text) },
+        (request) => { console.log(request) }
+    )
+
 })
+
 
 window.jQuery = function (nodeOrSelector) {
     let nodes = {}
     return nodes
 }
 
-window.jQuery.ajax = function ({ url, method, body, success, fail }) {
-
-    let request = new XMLHttpRequest()
-    request.open(method, url)
-    request.onreadystatechange = () => {
-        if (request.readyState === 4) {
-            if (request.status >= 200 && request.status < 300) {
-                success.call(undefined, request.responseText)
-            } else if (request.status >= 400) {
-                fail.call(undefined, request)
+window.jQuery.ajax = function ({ url, method, body, headers }) {
+    return new Promise(function (resolve, reject) {
+        let request = new XMLHttpRequest()
+        request.open(method, url) // 配置request
+        for (let key in headers) {
+            let value = headers[key]
+            request.setRequestHeader(key, value)
+        }
+        request.onreadystatechange = () => {
+            if (request.readyState === 4) {
+                if (request.status >= 200 && request.status < 300) {
+                    resolve.call(undefined, request.responseText)
+                } else if (request.status >= 400) {
+                    reject.call(undefined, request)
+                }
             }
         }
-    }
-    request.send()
+        request.send(body)
+    })
 }
 
 window.$ = window.jQuery
+
+window.Promise = function (fn) {
+    // ...
+    return {
+        then: function () { }
+    }
+}
