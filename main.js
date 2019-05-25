@@ -19,12 +19,7 @@ window.jQuery = function (nodeOrSelector) {
     return nodes
 }
 
-window.jQuery.ajax = function (options) {
-    let url = options.url
-    let method = options.method
-    let body = options.body
-    let success = options.success
-    let fail = options.fail
+window.jQuery.ajax = function ({ url, method, body, success, fail }) {
 
     let request = new XMLHttpRequest()
     request.open(method, url)
